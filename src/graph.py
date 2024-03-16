@@ -89,7 +89,7 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
             
             potential_exits = determine_potential_exits(row, col, N)
 
-            current_exits = add_exits(tile_exits, row, col, N, potential_exits, exit_probability)
+            current_exits = add_exits(tile_exits, row, col, potential_exits, exit_probability, N)
 
             current_exits = dead_end_handling(allow_dead_ends, current_exits, potential_exits)
 
