@@ -62,7 +62,7 @@ def draw_tile(ax: plt.Axes, exits: List[str]):
             ax.add_patch(tile)
 
 
-def draw_maze(tile_exits: List[List[str]]):
+def draw_maze(tile_exits: List[List[str]], block: bool =False):
     """
     Draws a maze based on the specified exits for each tile.
 
@@ -74,6 +74,8 @@ def draw_maze(tile_exits: List[List[str]]):
     Parameters:
     - tile_exits (List[List[str]]): A list of lists, where each inner list contains 
       strings indicating the exits from that tile (e.g., "north", "south", etc.).
+    - block: bool =False: A Boolean value to block further running of code when maze
+      is plotted.
 
     Raises:
     - ValueError: If the length of `tile_exits` does not form a perfect square, 
@@ -112,7 +114,7 @@ def draw_maze(tile_exits: List[List[str]]):
     print_image("knight.png", tile_exits, num_tiles - side_length, axs)
     
 
-    plt.show(block=False)
+    plt.show(block=block)
     #block tells it to open the window but continue running the script
 
 def print_image(image_name: str, tile_exits: List[List[str]], position: int, axs: List[plt.Axes]):
