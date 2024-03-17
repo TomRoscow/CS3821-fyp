@@ -12,4 +12,4 @@ def bfs(graph, start, goal):
                 visited.add(neighbour)
                 queue.append((neighbour, path + [neighbour]))
 
-    return None  # Goal not reachable
+    return None  # If goal not reachable
