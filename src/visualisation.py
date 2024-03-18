@@ -64,7 +64,7 @@ def draw_tile(ax: plt.Axes, exits: List[str]):
             ax.add_patch(tile)
 
 
-def draw_maze(tile_exits: List[List[str]], block: bool =False):
+def draw_maze(tile_exits: List[dict[str]], block: bool =False):
     """
     Draws a maze based on the specified exits for each tile.
 
@@ -105,11 +105,14 @@ def draw_maze(tile_exits: List[List[str]], block: bool =False):
     axs = axs.flatten() if num_tiles > 1 else [axs]  # Ensure axs is always a list
 
     for i, exits in enumerate(tile_exits):
-        draw_tile(axs[i], exits)
+    # For 0, first list of dictionary element in the list of list of dictionaries that is tile_exits. This hasn't changed from when it was a list of exits instead of a list of dictionaries of exits and their cost
+        draw_tile(axs[i], List(exits.keys()))
+        # Draw at 0, with what is made a list type from the 'list' of dictionary names for the tile. E.g. listifies 'north' and 'west' if the first tile's dictionary is {'north': 3, 'west': 5}
+        # Because previously it took exits which was the first element in a list (the tile's exit directions) of lists (all tiles). Now it takes the list version of the first element's (tile) dictionary (exit) keys (direction)
 
     # Visualise maze entrance (even if not traversable)
     bottom_left_exits = tile_exits[num_tiles - side_length]
-    bottom_left_exits.append("south")
+    bottom_left_exits["south"]
     draw_tile(axs[num_tiles - side_length], bottom_left_exits)
 
     print_image("crown.png", tile_exits, int(math.sqrt(len(tile_exits)))-1, axs)
@@ -137,7 +140,7 @@ def update_knight(size, position, axs, block=False):
     #time.sleep(1)
 
 
-def print_image(image_name: str, tile_exits: List[List[str]], position: int, axs: List[plt.Axes]):
+def print_image(image_name: str, tile_exits: List[dict[str]], position: int, axs: List[plt.Axes]):
     """
     Places an image on a specified position within a maze visualization.
 
