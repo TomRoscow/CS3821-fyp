@@ -1,5 +1,5 @@
 import math
-from visualisation import draw_maze
+from visualisation import draw_maze, update_knight
 from graph import create_maze_graph
 from graph_search.breadth_first import bfs
 from graph_search.depth_first import dfs
@@ -15,10 +15,19 @@ if __name__ == "__main__":
     size = 10
     flattened_exits, graph = create_maze_graph(size)
 
-    draw_maze(flattened_exits, block=True)
+    tile_exits, axs = draw_maze(flattened_exits, block=True)
+
+    #entities = [[]]
+    #for each in entities:
+    #    print_image(name)
 
     
+    
     bfs_path = bfs(graph, (size-1, 0), (0, size-1))
+
+    for each in bfs_path:
+        update_knight(tile_exits, each, axs, block=True)   
+
     if bfs_path:
         print(f"BFS shortest path from character to reward: {bfs_path}")
     else:
@@ -30,3 +39,4 @@ if __name__ == "__main__":
     else:
         print(f"No path found from character to reward with DFS.")
         
+    

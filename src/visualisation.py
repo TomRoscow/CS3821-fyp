@@ -1,3 +1,4 @@
+import time
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
@@ -8,6 +9,7 @@ from io import BytesIO
 import numpy as np
 import os
 from typing import List
+plt.ion()  # Turn on interactive mode
 
 def draw_tile(ax: plt.Axes, exits: List[str]):
     """
@@ -66,9 +68,9 @@ def draw_maze(tile_exits: List[List[str]], block: bool =False):
     """
     Draws a maze based on the specified exits for each tile.
 
-    The function creates a square grid visualization of a maze where each cell (tile) 
+    The function creates a square grid visualisation of a maze where each cell (tile) 
     has specified exits. It checks if the number of tiles forms a perfect square 
-    and raises a ValueError if not. It then visualizes the maze with matplotlib, 
+    and raises a ValueError if not. It then visualises the maze with matplotlib, 
     marking the entrance and placing images on specified tiles.
 
     Parameters:
@@ -114,8 +116,26 @@ def draw_maze(tile_exits: List[List[str]], block: bool =False):
     print_image("knight.png", tile_exits, num_tiles - side_length, axs)
     
 
-    plt.show(block=block)
+    plt.pause(1)
     #block tells it to open the window but continue running the script
+    #time.sleep(1)
+
+
+    return tile_exits, axs # Does this so temp.py has axs for when it calls update_knight(). Remember to change tile_exits to size when print_image can be resolved for needing tile_exits instead of just the size
+
+# The plan for this function is to be called for each coordinate in the BFS shortest path list, so you have a trail of knights, to prove how to reprint the knight image after the initialisation.
+# Then you can move on to removing the previous image print [from the tile it's leaving]. And then you can move on to stuff like doing that whenever any entity's coordinates change, and having a list of entities with their image filename and coordinate.
+def update_knight(size, position, axs, block=False):
+    
+    # My trouble here is temp.py is going to be calling this method because it has bfs_path from breadth_first.py and it commands the drawing (ie calls draw_maze), but print_image() here requires arguments from other functions here in visualisation.py
+    # The error coming here is that print_image() takes an int for the position like 91 for bottom right but temp.py is giving an array like (9,0) for bottom right. Don't know how to resolve simply.
+    row, col = position
+    num_columns = int(math.sqrt(len(size)))
+    flat_position = row * num_columns + col
+    print_image("knight.png", size, flat_position, axs)
+    plt.pause(1)
+    #time.sleep(1)
+
 
 def print_image(image_name: str, tile_exits: List[List[str]], position: int, axs: List[plt.Axes]):
     """
