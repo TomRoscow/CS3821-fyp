@@ -116,7 +116,7 @@ def draw_maze(tile_exits: List[List[str]], block: bool =False):
     print_image("knight.png", tile_exits, num_tiles - side_length, axs)
     
 
-    plt.pause(1)
+    plt.pause(0.5)
     #block tells it to open the window but continue running the script
     #time.sleep(1)
 
@@ -133,7 +133,7 @@ def update_knight(size, position, axs, block=False):
     num_columns = int(math.sqrt(len(size)))
     flat_position = row * num_columns + col
     print_image("knight.png", size, flat_position, axs)
-    plt.pause(1)
+    plt.pause(0.5)
     #time.sleep(1)
 
 

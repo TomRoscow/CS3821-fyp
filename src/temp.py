@@ -6,13 +6,27 @@ from graph_search.depth_first import dfs
 import argparse
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Maze Size Selector")
+    parser.add_argument("--size", type=str, choices=['small', 'medium', 'large'], help="Size of the maze: small, medium, or large")
+    args = parser.parse_args()
+
+    # Map the size choices to numerical sizes
+    size_mapping = {
+        'small': 8,  # Assuming a small maze is 10x10
+        'medium': 16,  # Assuming a medium maze is 15x15
+        'large': 32   # Assuming a large maze is 20x20
+    }
+    
+    # Get the numerical size from the user's input
+    size = size_mapping.get(args.size, 10)  # Default to 'small' (10x10) if not specified
+
     #parser = argparse.ArgumentParser()
     #parser.add_argument("--tile_exits")
     #args = parser.parse_args()
 
     # draw_maze([["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"], ["north"]])
 
-    size = 10
+    #size = 10  this was the old way os setting size before user choice to also med or large
     flattened_exits, graph = create_maze_graph(size)
 
     tile_exits, axs = draw_maze(flattened_exits, block=True)
