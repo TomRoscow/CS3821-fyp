@@ -106,13 +106,13 @@ def draw_maze(tile_exits: List[dict[str]], block: bool =False):
 
     for i, exits in enumerate(tile_exits):
     # For 0, first list of dictionary element in the list of list of dictionaries that is tile_exits. This hasn't changed from when it was a list of exits instead of a list of dictionaries of exits and their cost
-        draw_tile(axs[i], List(exits.keys()))
+        draw_tile(axs[i], list(exits.keys()))
         # Draw at 0, with what is made a list type from the 'list' of dictionary names for the tile. E.g. listifies 'north' and 'west' if the first tile's dictionary is {'north': 3, 'west': 5}
         # Because previously it took exits which was the first element in a list (the tile's exit directions) of lists (all tiles). Now it takes the list version of the first element's (tile) dictionary (exit) keys (direction)
 
     # Visualise maze entrance (even if not traversable)
     bottom_left_exits = tile_exits[num_tiles - side_length]
-    bottom_left_exits["south"]
+    bottom_left_exits['south'] = None
     draw_tile(axs[num_tiles - side_length], bottom_left_exits)
 
     print_image("crown.png", tile_exits, int(math.sqrt(len(tile_exits)))-1, axs)

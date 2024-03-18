@@ -5,16 +5,16 @@ def add_exits(tile_exits, row, col, potential_exits, exit_probability, N):
     # Add exits and costs randomly but also check for neighbouring tiles
     current_exits = tile_exits[row][col]  #This just finds the tile you're targeting from the loop
     cost_function = lambda: random.randint(1, 10)
-    if 'south' in potential_exits and row > 0 and any(exit['direction'] == 'north' for exit in tile_exits[row - 1][col]):
+    if 'south' in potential_exits and row > 0 and 'north' in tile_exits[row - 1][col]:
         if random.random() < exit_probability:
             current_exits['north'] = cost_function()
-    if 'north' in potential_exits and row < N - 1 and any(exit['direction'] == 'south' for exit in tile_exits[row + 1][col]):
+    if 'north' in potential_exits and row < N - 1 and 'south' in tile_exits[row + 1][col]:
         if random.random() < exit_probability:
             current_exits['south'] = cost_function()
-    if 'east' in potential_exits and col > 0 and any(exit['direction'] == 'west' for exit in tile_exits[row][col - 1]):
+    if 'east' in potential_exits and col > 0 and 'west' in tile_exits[row][col - 1]:
         if random.random() < exit_probability:
             current_exits['west'] = cost_function()
-    if 'west' in potential_exits and col < N - 1 and any(exit['direction'] == 'east' for exit in tile_exits[row][col + 1]):
+    if 'west' in potential_exits and col < N - 1 and 'east' in tile_exits[row][col + 1]:
         if random.random() < exit_probability:
             current_exits['east'] = cost_function()
     return current_exits
