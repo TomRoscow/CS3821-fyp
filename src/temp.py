@@ -39,22 +39,21 @@ if __name__ == "__main__":
     
     bfs_path = bfs(graph, (size-1, 0), (0, size-1))
 
-    for each in bfs_path:
-        update_knight(tile_exits, each, axs, block=True)   
-
     if bfs_path:
+        for each in bfs_path:
+            update_knight(tile_exits, each, axs, block=True)   
+
         print(f"BFS shortest path from character to reward: {bfs_path}")
     else:
         print(f"No path found from character to reward with BFS.")
 
     dfs_path = dfs(graph, (size-1, 0), (0, size-1))
 
-    for each in dfs_path:
-        update_knight(tile_exits, each, axs, block=True)   
-
     if dfs_path:
+        for each in dfs_path:
+            update_knight(tile_exits, each, axs, block=True)   
+
         print(f"DFS first path from character to reward: {dfs_path}")
     else:
         print(f"No path found from character to reward with DFS.")
         
-    
