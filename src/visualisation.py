@@ -112,7 +112,7 @@ def draw_maze(tile_exits: List[dict[str]], block: bool =False):
 
     # Visualise maze entrance (even if not traversable)
     bottom_left_exits = tile_exits[num_tiles - side_length]
-    bottom_left_exits['south'] = None
+    bottom_left_exits['south'] = 0
     draw_tile(axs[num_tiles - side_length], bottom_left_exits)
 
     print_image("crown.png", tile_exits, int(math.sqrt(len(tile_exits)))-1, axs)

@@ -89,14 +89,15 @@ def add_edge(graph, node1, node2, cost):
     return graph
 
 def create_maze_graph(N, allow_dead_ends=False, seed=None):
-    tile_exits = [[{} for _ in range(N)] for _ in range(N)]  # Initialize exits for NxN maze
+    tile_exits = [[{} for _ in range(N)] for _ in range(N)]  # Initialise exits for NxN maze
     exit_probability = 0.25
 
     if seed:
         random.seed(seed)
 
-    # Initialize the graph as an empty dictionary. Nope, now there are costs for each exit for both directions/orientations and the graph is directional with doubled-up edges, it's a set of dictionaries.
-    graph = {{}}
+    # Initialise the graph as an empty dictionary. It will be populated with nested dictionaries
+    # There will be costs for each exit for both directions/orientations and the graph is directional with doubled-up edges
+    graph = {}
 
     # Generate exits for each tile
     for row in range(N):
@@ -116,6 +117,7 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
 
             
     # Flatten the exits list for compatibility with the drawing function
+    # Where tile_exits is a dictionary (of the tile's exits) for the list of columns for the list of rows, flattened_exits is a flat list of the dictionaries. So one long list instead of a list of lists, ie a 2D array or square of elements.
     flattened_exits = [exit for row in tile_exits for exit in row]
 
     return flattened_exits, graph
