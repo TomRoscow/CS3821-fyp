@@ -1,23 +1,32 @@
 import random
 
 
-def add_exits(tile_exits, row, col, potential_exits, exit_probability, N):
+def add_exits(tile_exits, row, col, potential_exits, exit_probability, N, graph):
     # Add exits and costs randomly but also check for neighbouring tiles
     current_exits = tile_exits[row][col]  #This just finds the tile you're targeting from the loop
     cost_function = lambda: random.randint(1, 10)
     if 'south' in potential_exits and row > 0 and 'north' in tile_exits[row - 1][col]:
         if random.random() < exit_probability:
-            current_exits['north'] = cost_function()
+            cost = cost_function()
+            current_exits['north'] = cost
+            graph = add_edge(graph, (row, col), (row - 1, col), cost)
     if 'north' in potential_exits and row < N - 1 and 'south' in tile_exits[row + 1][col]:
         if random.random() < exit_probability:
-            current_exits['south'] = cost_function()
+            cost = cost_function()
+            current_exits['south'] = cost
+            graph = add_edge(graph, (row, col), (row + 1, col), cost)
     if 'east' in potential_exits and col > 0 and 'west' in tile_exits[row][col - 1]:
         if random.random() < exit_probability:
-            current_exits['west'] = cost_function()
+            cost = cost_function()
+            current_exits['west'] = cost
+            graph = add_edge(graph, (row, col), (row, col - 1), cost)
     if 'west' in potential_exits and col < N - 1 and 'east' in tile_exits[row][col + 1]:
         if random.random() < exit_probability:
-            current_exits['east'] = cost_function()
-    return current_exits
+            cost = cost_function()
+            current_exits['east'] = cost
+            graph = add_edge(graph, (row, col), (row, col + 1), cost)
+    return current_exits, graph
+    #returns dictionary of direction:cost, and the graph with a costed directional edge added
 
 def determine_potential_exits(row, col, N):
     # Determine potential exits based on maze boundaries
@@ -51,30 +60,32 @@ def update_neighbouring_tiles(exit_direction, tile_exits, graph, row, col, N):
     cost_function = lambda: random.randint(1, 10)
     # Update neighbouring tiles
     if exit_direction == 'north' and row > 0:
-        tile_exits[row - 1][col]['south'] = cost_function()
-        graph = add_edge(graph, (row, col), (row - 1, col))
+        cost = cost_function()
+        tile_exits[row - 1][col]['south'] = cost
+        graph = add_edge(graph, (row - 1, col), (row, col), cost)
     if exit_direction == 'south' and row < N - 1:
-        tile_exits[row + 1][col]['north'] = cost_function()
-        graph = add_edge(graph, (row, col), (row + 1, col))
+        cost = cost_function()
+        tile_exits[row + 1][col]['north'] = cost
+        graph = add_edge(graph, (row + 1, col), (row, col), cost)
     if exit_direction == 'west' and col > 0:
-        tile_exits[row][col - 1]['east'] = cost_function()
-        graph = add_edge(graph, (row, col), (row, col - 1))
+        cost = cost_function()
+        tile_exits[row][col - 1]['east'] = cost
+        graph = add_edge(graph, (row, col - 1), (row, col), cost)
     if exit_direction == 'east' and col < N - 1:
-        tile_exits[row][col + 1]['west'] = cost_function()
-        graph = add_edge(graph, (row, col), (row, col + 1))
+        cost = cost_function()
+        tile_exits[row][col + 1]['west'] = cost
+        graph = add_edge(graph, (row, col + 1), (row, col), cost)
     return tile_exits
 
-# Helper function to add an edge in the graph
-def add_edge(graph, node1, node2):
+# This function adds a directed edge with a specified cost to the graph.
+# The graph is represented as a dictionary where each key is a node, and its value is another dictionary mapping neighbouring nodes to the costs of the edges leading to them.
+# If node1 already exists in the graph, it adds the edge to node2 with the new cost. If node1 isn't in the graph, it doesn't have any outgoing edges yet, so a new entry is created in the graph with node1 as the key and the value a dictionary with node2 as the key and the cost as the value.
+# This function gets called by add_exits when a tile has an exit to a neighbour and generates its cost, and by update_neighbouring_tiles when the neighbour is made to reciprocate the exit and its own cost is generated.
+def add_edge(graph, node1, node2, cost):
     if node1 in graph:
-        graph[node1].add(node2)
+        graph[node1][node2] = cost
     else:
-        graph[node1] = {node2}
-    if node2 in graph:
-        graph[node2].add(node1)
-    else:
-        graph[node2] = {node1}
-    # final four lines make node2's pathway match what node1 wants
+        graph[node1] = {node2: cost}
     return graph
 
 def create_maze_graph(N, allow_dead_ends=False, seed=None):
@@ -84,8 +95,8 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
     if seed:
         random.seed(seed)
 
-    # Initialize the graph as an empty dictionary
-    graph = {}
+    # Initialize the graph as an empty dictionary. Nope, now there are costs for each exit for both directions/orientations and the graph is directional with doubled-up edges, it's a set of dictionaries.
+    graph = {{}}
 
     # Generate exits for each tile
     for row in range(N):
@@ -94,12 +105,13 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
             potential_exits = determine_potential_exits(row, col, N)
             #what exits this tile could have given its location in the maze
 
-            current_exits = add_exits(tile_exits, row, col, potential_exits, exit_probability, N)
-            # current_exits is the tile
+            current_exits, graph = add_exits(tile_exits, row, col, potential_exits, exit_probability, N, graph)
+            # current_exits is the tile as a dictionary of exit-direction:cost
 
             current_exits = dead_end_handling(allow_dead_ends, current_exits, potential_exits)
 
             for exit_direction in current_exits:
+            # for every direction (key:value pair) in this tile's dictionary of exit directions and costs
                 tile_exits = update_neighbouring_tiles(exit_direction, tile_exits, graph, row, col, N)
 
             
