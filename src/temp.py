@@ -1,4 +1,5 @@
 import math
+from monsters import static_monsters
 from visualisation import draw_maze, update_knight
 from graph import create_maze_graph
 from graph_search.breadth_first import bfs
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     }
     
     # Get the numerical size from the user's input
-    size = size_mapping.get(args.size, 10)  # Default to 'small' (10x10) if not specified
+    size = size_mapping.get(args.size, 8)  # Default to 'small' (8x8) if not specified
 
     #parser = argparse.ArgumentParser()
     #parser.add_argument("--tile_exits")
@@ -30,7 +31,10 @@ if __name__ == "__main__":
     #size = 10  <-this was the old way of setting size before user choice to also med or large
     flattened_exits, graph = create_maze_graph(size)
 
-    tile_exits, axs = draw_maze(flattened_exits, block=True)
+    # Creates monsters and places them in graph
+    graph, monsters = static_monsters(graph, size)
+    
+    tile_exits, axs = draw_maze(flattened_exits, monsters, block=True)
 
     # My attempt to create a list of entities instead of handling drawing the crown and knight separately repeatedly
     #entities = [[]]

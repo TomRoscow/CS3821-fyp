@@ -1,33 +1,5 @@
 import random
 
-
-def add_exits(tile_exits, row, col, potential_exits, exit_probability, N, graph):
-    # Add exits and costs randomly but also check for neighbouring tiles
-    current_exits = tile_exits[row][col]  #This just finds the tile you're targeting from the loop
-    cost_function = lambda: random.randint(1, 10)
-    if 'south' in potential_exits and row > 0 and 'north' in tile_exits[row - 1][col]:
-        if random.random() < exit_probability:
-            cost = cost_function()
-            current_exits['north'] = cost
-            graph = add_edge(graph, (row, col), (row - 1, col), cost)
-    if 'north' in potential_exits and row < N - 1 and 'south' in tile_exits[row + 1][col]:
-        if random.random() < exit_probability:
-            cost = cost_function()
-            current_exits['south'] = cost
-            graph = add_edge(graph, (row, col), (row + 1, col), cost)
-    if 'east' in potential_exits and col > 0 and 'west' in tile_exits[row][col - 1]:
-        if random.random() < exit_probability:
-            cost = cost_function()
-            current_exits['west'] = cost
-            graph = add_edge(graph, (row, col), (row, col - 1), cost)
-    if 'west' in potential_exits and col < N - 1 and 'east' in tile_exits[row][col + 1]:
-        if random.random() < exit_probability:
-            cost = cost_function()
-            current_exits['east'] = cost
-            graph = add_edge(graph, (row, col), (row, col + 1), cost)
-    return current_exits, graph
-    #returns dictionary of direction:cost, and the graph with a costed directional edge added
-
 def determine_potential_exits(row, col, N):
     # Determine potential exits based on maze boundaries
     potential_exits = set()
@@ -41,19 +13,17 @@ def determine_potential_exits(row, col, N):
         potential_exits.add('east')
     return potential_exits
 
-def dead_end_handling(allow_dead_ends, current_exits, potential_exits, graph, row, col):
+def add_exits(allow_dead_ends, current_exits, potential_exits, graph, row, col):
     # Ensure at least two exits per block
     if allow_dead_ends:
         min_exits = 1
     else:
         min_exits = 2
 
-    cost_function = lambda: random.randint(1, 10)
-    #Also finding cost here since below we might be adding exits
+    cost = 1
 
     while len(current_exits) < min_exits:
         additional_exit = random.choice(list(potential_exits - set(current_exits.keys())))
-        cost = cost_function()
         current_exits[additional_exit] = cost
         if additional_exit == 'north':
             graph = add_edge(graph, (row, col), (row - 1, col), cost)
@@ -66,22 +36,18 @@ def dead_end_handling(allow_dead_ends, current_exits, potential_exits, graph, ro
     return current_exits, graph
 
 def update_neighbouring_tiles(exit_direction, tile_exits, graph, row, col, N):
-    cost_function = lambda: random.randint(1, 10)
+    cost = 1
     # Update neighbouring tiles
     if exit_direction == 'north' and row > 0:
-        cost = cost_function()
         tile_exits[row - 1][col]['south'] = cost
         graph = add_edge(graph, (row - 1, col), (row, col), cost)
     if exit_direction == 'south' and row < N - 1:
-        cost = cost_function()
         tile_exits[row + 1][col]['north'] = cost
         graph = add_edge(graph, (row + 1, col), (row, col), cost)
     if exit_direction == 'west' and col > 0:
-        cost = cost_function()
         tile_exits[row][col - 1]['east'] = cost
         graph = add_edge(graph, (row, col - 1), (row, col), cost)
     if exit_direction == 'east' and col < N - 1:
-        cost = cost_function()
         tile_exits[row][col + 1]['west'] = cost
         graph = add_edge(graph, (row, col + 1), (row, col), cost)
     return graph, tile_exits
@@ -115,10 +81,8 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
             potential_exits = determine_potential_exits(row, col, N)
             #what exits this tile could have given its location in the maze
 
-            current_exits, graph = add_exits(tile_exits, row, col, potential_exits, exit_probability, N, graph)
-            # current_exits is the tile as a dictionary of exit-direction:cost
-
-            current_exits, graph = dead_end_handling(allow_dead_ends, current_exits, potential_exits, graph, row, col)
+            current_exits = tile_exits[row][col]
+            current_exits, graph = add_exits(allow_dead_ends, current_exits, potential_exits, graph, row, col)
 
             for exit_direction in current_exits:
             # for every direction (key:value pair) in this tile's dictionary of exit directions and costs

@@ -8,7 +8,7 @@ from PIL import Image
 from io import BytesIO
 import numpy as np
 import os
-from typing import List
+from typing import List, Tuple
 plt.ion()  # Turn on interactive mode
 
 def draw_tile(ax: plt.Axes, exits: List[str]):
@@ -64,7 +64,7 @@ def draw_tile(ax: plt.Axes, exits: List[str]):
             ax.add_patch(tile)
 
 
-def draw_maze(tile_exits: List[dict[str]], block: bool =False):
+def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, int]], block: bool =False):
     """
     Draws a maze based on the specified exits for each tile.
 
@@ -117,7 +117,10 @@ def draw_maze(tile_exits: List[dict[str]], block: bool =False):
 
     print_image("crown.png", tile_exits, int(math.sqrt(len(tile_exits)))-1, axs)
     print_image("knight.png", tile_exits, num_tiles - side_length, axs)
-    
+    for location in monster_locations:
+        row, col = location
+        flat_location = row * side_length + col
+        print_image("goblin.png", tile_exits, flat_location, axs)
 
     plt.pause(0.2)
     #block tells it to open the window but continue running the script
