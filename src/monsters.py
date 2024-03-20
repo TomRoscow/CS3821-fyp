@@ -23,7 +23,3 @@ def static_monsters(graph: Dict[Tuple[int, int], Dict[Tuple[int, int], int]], si
                 graph[neighbour][monster] = cost
     
     return graph, monsters
-
-# in visualisation.py, modify draw_maze() to take an additional parameter which is monster locations
-# for every monster location, do: print_image("monster.png", tile_exits, monster_position, axs)
-# When calling draw_maze(), add in the monster locations that are returned by static_monsters()

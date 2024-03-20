@@ -81,6 +81,7 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
             potential_exits = determine_potential_exits(row, col, N)
             #what exits this tile could have given its location in the maze
 
+            # current_exits is the tile as a dictionary of exit-direction:cost
             current_exits = tile_exits[row][col]
             current_exits, graph = add_exits(allow_dead_ends, current_exits, potential_exits, graph, row, col)
 

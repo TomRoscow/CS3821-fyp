@@ -122,7 +122,7 @@ def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, in
         flat_location = row * side_length + col
         print_image("goblin.png", tile_exits, flat_location, axs)
 
-    plt.pause(0.2)
+    plt.pause(0.1)
     #block tells it to open the window but continue running the script
     #time.sleep(1)
 
@@ -139,7 +139,7 @@ def update_knight(size, position, axs, block=False):
     num_columns = int(math.sqrt(len(size)))
     flat_position = row * num_columns + col
     print_image("knight.png", size, flat_position, axs)
-    plt.pause(0.2)
+    plt.pause(0.1)
     #time.sleep(1)
 
 
