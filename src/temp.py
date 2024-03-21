@@ -1,4 +1,5 @@
 import math
+from graph_search.greedy import greedy_search
 from monsters import static_monsters
 from items import add_items
 from visualisation import draw_maze, update_knight
@@ -89,8 +90,14 @@ if __name__ == "__main__":
         print(f"No path found touching all corners with A* algorithm and sum of corners heuristic.")
 
     graph, items_locations = add_items(graph, size)
-    items_path_a_star, items_cost_a_star = a_star_search(graph, (size-1, 0), size, custom_heuristic, set(items_locations))
+    items_path_a_star, items_cost_a_star = a_star_search(graph, (size-1, 0), size, custom_heuristic, set(items_locations)) # Could be heuristic_nearest_location instead of custom
     if items_path_a_star:
         print(f"A* shortest path collecting all items, length: {len(items_path_a_star)}, cost: {items_cost_a_star}. Heuristic: Custom")
     else:
         print(f"No path found collecting all items with A* algorithm and my custom heuristic.")
+
+    items_path_greedy = greedy_search(graph, (size-1, 0), items_locations, heuristic_nearest_location)
+    if items_path_greedy:
+        print(f"Greedy shortest path collecting all items, length: {len(items_path_a_star)}. Heuristic: Nearest Location")
+    else:
+        print(f"No path found collecting all items with greedy algorithm and nearest location heuristic.")
