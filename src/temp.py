@@ -1,11 +1,12 @@
 import math
 from monsters import static_monsters
+from items import add_items
 from visualisation import draw_maze, update_knight
 from graph import create_maze_graph
 from graph_search.breadth_first import bfs
 from graph_search.depth_first import dfs
 from graph_search.uniform_cost import uniform_cost_search
-from graph_search.a_star_search import a_star_search, heuristic_nearest_corner, heuristic_sum_corners, custom_heuristic
+from graph_search.a_star_search import a_star_search, heuristic_nearest_location, heuristic_sum_locations, custom_heuristic
 import argparse
 
 if __name__ == "__main__":
@@ -63,7 +64,11 @@ if __name__ == "__main__":
     else:
         print(f"No path found from character to reward with UCS.")
 
-    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, custom_heuristic)
+    def get_corners(N):
+        """Get all corners for an NxN maze."""
+        return [(0, 0), (0, N-1), (N-1, 0), (N-1, N-1)]
+
+    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, custom_heuristic, set(get_corners(size)))
     if a_star_path:
         #for each in a_star_path:
         #    update_knight(tile_exits, each, axs, block=True)
@@ -71,14 +76,21 @@ if __name__ == "__main__":
     else:
         print(f"No path found touching all corners with A* algorithm and my custom heuristic.")
 
-    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_nearest_corner)
+    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_nearest_location, set(get_corners(size)))
     if a_star_path:
         print(f"A* shortest path touching all corners, length: {len(a_star_path)}, cost: {a_star_cost}. Heuristic: Nearest Corner")
     else:
         print(f"No path found touching all corners with A* algorithm and nearest corner heuristic.")
         
-    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_sum_corners)
+    a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_sum_locations, set(get_corners(size)))
     if a_star_path:
         print(f"A* shortest path touching all corners, length: {len(a_star_path)}, cost: {a_star_cost}. Heuristic: Sum of Corners")
     else:
         print(f"No path found touching all corners with A* algorithm and sum of corners heuristic.")
+
+    graph, items_locations = add_items(graph, size)
+    items_path_a_star, items_cost_a_star = a_star_search(graph, (size-1, 0), size, custom_heuristic, set(items_locations))
+    if items_path_a_star:
+        print(f"A* shortest path collecting all items, length: {len(items_path_a_star)}, cost: {items_cost_a_star}. Heuristic: Custom")
+    else:
+        print(f"No path found collecting all items with A* algorithm and my custom heuristic.")
