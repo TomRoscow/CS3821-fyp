@@ -64,7 +64,7 @@ def draw_tile(ax: plt.Axes, exits: List[str]):
             ax.add_patch(tile)
 
 
-def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, int]], block: bool =False):
+def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, int]], items_locations: List[Tuple[int, int]], block: bool =False):
     """
     Draws a maze based on the specified exits for each tile.
 
@@ -121,6 +121,11 @@ def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, in
         row, col = location
         flat_location = row * side_length + col
         print_image("goblin.png", tile_exits, flat_location, axs)
+
+    for location in items_locations:
+        row, col = location
+        flat_location = row * side_length + col
+        print_image("key.png", tile_exits, flat_location, axs)
 
     plt.pause(0.1)
     #block tells it to open the window but continue running the script
@@ -187,3 +192,39 @@ def print_image(image_name: str, tile_exits: List[dict[str]], position: int, axs
     N = int(math.sqrt(len(tile_exits)))
     axs[position].imshow(image_data, aspect="auto", extent=(0, 4, 0, 4), zorder=2)
     
+def erase_path(size: List[dict[str]], path: List[Tuple[int, int]], axs: List[plt.Axes], monster_locations: List[Tuple[int, int]], items_locations: List[Tuple[int, int]]):
+    """
+    Removes the knight's images along a given path in the maze.
+
+    This function clears the tiles that the knight has visited and redraws them without the knight's image,
+    effectively "erasing" the path taken by the knight. It assumes that the maze itself does not change
+    and only the knight's image needs to be removed.
+
+    Parameters:
+    - size (List[dict[str]]): The list of dictionaries representing the exits for each tile in the maze.
+    - path (List[Tuple[int, int]]): The list of positions (as row, col tuples) representing the knight's path.
+    - axs (List[plt.Axes]): A list of matplotlib Axes objects corresponding to each tile of the maze.
+    - block (bool): If True, pause the execution to allow the updated plot to be displayed.
+    """
+
+    num_columns = int(math.sqrt(len(size)))
+    for position in path:
+        row, col = position
+        flat_position = row * num_columns + col
+        ax = axs[flat_position]
+
+        # Clear the Axes corresponding to this position
+        ax.clear()
+
+        # Redraw the tile at this position without the knight's image
+        draw_tile(ax, list(size[flat_position].keys()))
+
+    print_image("crown.png", size, int(math.sqrt(len(size)))-1, axs)
+    for location in monster_locations:
+        row, col = location
+        flat_location = row * num_columns + col
+        print_image("goblin.png", size, flat_location, axs)
+    for location in items_locations:
+        row, col = location
+        flat_location = row * num_columns + col
+        print_image("key.png", size, flat_location, axs)
