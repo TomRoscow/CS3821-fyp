@@ -1,3 +1,9 @@
+# Find root directory
+from pathlib import Path
+
+source_path = Path(__file__).resolve()
+root_dir = source_path.parent.parent
+
 import time
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -185,7 +191,7 @@ def print_image(image_name: str, tile_exits: List[dict[str]], position: int, axs
 
     current_path = os.getcwd()
 
-    image_location = "../images/" + image_name
+    image_location = os.path.join(root_dir, "images", image_name)
     image = Image.open(image_location)
     image = image.convert("RGBA")
     image_data = np.array(image)
