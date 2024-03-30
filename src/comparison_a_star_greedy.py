@@ -29,25 +29,37 @@ def compare_a_star_greedy():
                 start_time = timeit.timeit()
                 path, _= algorithm_function(graph, (maze_dimension-1, 0), maze_dimension, heuristic_nearest_location, set(items_locations))
                 end_time = timeit.timeit()
+                if path:
+                    found_path = True
+                    path_length = len(path)
+                else:
+                    found_path = False
+                    path_length = None
                 res = pd.DataFrame({"algorithm": algorithm_name,
                                     "maze size": maze_size,
-                                    "path length": len(path),
+                                    "success": found_path,
+                                    "path length": path_length,
                                     "time": end_time - start_time},
                                     index=[0])
 
                 results = pd.concat([results, res])
 
     results = results.reset_index() # This is because seaborn complains if there are duplicate indices in the dataframe
-    fig, ax = plt.subplots(1, 2)
+    results.to_csv("../a_start_greedy_comparison_results.csv") # Save it to avoid running again because it takes a long time
+    fig, ax = plt.subplots(1, 3)
+
+    # Plot mean +- 95% confidence interval of effectiveness (rate of finding a path), over maze sizes (on the x-axis), separated by algorithm (separate lines/colours)
+    sns.lineplot(data=results, x="maze size", y="success", hue="algorithm", errorbar="ci", ax=ax[0])
 
     # Plot mean +- standard error of effectiveness (path length), over maze sizes (on the x-axis), separated by algorithm (separate lines/colours)
-    sns.lineplot(data=results, x="maze size", y="path length", hue="algorithm", errorbar="se", ax=ax[0])
+    sns.lineplot(data=results, x="maze size", y="path length", hue="algorithm", errorbar="se", ax=ax[1])
 
     # Plot mean +- standard error of efficiency (time)
-    sns.lineplot(data=results, x="maze size", y="time", hue="algorithm", errorbar="se", ax=ax[1])
+    sns.lineplot(data=results, x="maze size", y="time", hue="algorithm", errorbar="se", ax=ax[2])
 
-    ax[0].set_title("Effectiveness")
-    ax[1].set_title("Efficiency")
+    ax[0].set_title("Effectiveness (success rate)")
+    ax[1].set_title("Effectiveness (path length)")
+    ax[2].set_title("Efficiency")
 
     plt.tight_layout() # This makes sure there is a nice spacing between the subplots
 
