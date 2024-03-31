@@ -18,16 +18,19 @@ def compare_a_star_greedy():
     results = pd.DataFrame()
 
     for algorithm_name, algorithm_function in [("A*", a_star_search), ("greedy", greedy_search)]:
-        # Below line should be the following as final when running for large as well... for maze_size, maze_dimension in [("small", 8), ("medium", 16), ("large", 32)]:
-        for maze_size, maze_dimension in [("small", 8), ("medium", 16)]:
+        # Below line should be the following as final when running for large as well... for maze_size, maze_dimension in [("small", 4), ("medium", 8), ("large", 16)]:
+        for maze_size, maze_dimension in [("small", 4), ("medium", 8)]:
             print(f"Beginning {algorithm_name} search on {maze_size} maze")
             for i in tqdm(range(n_runs)): # This creates a progress bar so you can estimate how long it's going to take (probably a long time)
                 # Set up maze graph, monsters, items
                 _, graph = create_maze_graph(maze_dimension, False, i)
                 graph, _ = static_monsters(graph, maze_dimension)
-                items_locations = add_items(graph, maze_dimension)
+                items_locations = add_items(maze_dimension)
                 start_time = timeit.timeit()
-                path, _= algorithm_function(graph, (maze_dimension-1, 0), maze_dimension, heuristic_nearest_location, set(items_locations))
+                if algorithm_name == "A*":
+                    path, _ = algorithm_function(graph, (maze_dimension-1, 0), maze_dimension, heuristic_nearest_location, set(items_locations))
+                elif algorithm_name == "greedy":
+                    path = algorithm_function(graph, (maze_dimension-1, 0), items_locations, heuristic_nearest_location)
                 end_time = timeit.timeit()
                 if path:
                     found_path = True

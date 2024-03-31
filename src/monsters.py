@@ -2,23 +2,13 @@ import random
 from typing import Dict, List, Tuple
 
 def static_monsters(graph: Dict[Tuple[int, int], Dict[Tuple[int, int], int]], size: int) -> Tuple[Dict[Tuple[int, int], Dict[Tuple[int, int], int]], List[Tuple[int, int]]]:
-    # Set monster locations according to size of maze
-    # if size == 8:
-    #     monsters = [(3, 2), (3, 5)]
-    # elif size == 16:
-    #     monsters = [(3, 3), (12, 12), (3, 12), (12, 3)]
-    # elif size == 32:
-    #     monsters = [(2, 4), (2, 16), (2, 27), (10, 10), (10, 22), (21, 11), (21, 21), (29, 4), (29, 17), (29, 27)]
-    # else:
-    #     monsters = []  # Default
-
     # New method of setting monster locations randomly, still according to size of maze
 
     # Decide the number of monsters based on the maze size
-    if size == 8:
+    if size == 4:
+        num_monsters = 1
+    elif size == 8:
         num_monsters = 2
-    elif size == 12:
-        num_monsters = 4
     elif size == 16:
         num_monsters = 4
     elif size == 32:
