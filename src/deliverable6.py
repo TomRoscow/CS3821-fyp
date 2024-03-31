@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     while not game_over:
     
-        # Checks the hero isn't about to walk into a monster. If it is, it recalculates Draws the hero's next step
+        # Checks the hero isn't about to walk into a monster. If it is, it recalculates
         hero_next_position = items_path_greedy[path_index]
         detour = False
         for monster, (monster_current_position, path) in monsters_with_paths.items():

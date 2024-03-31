@@ -70,7 +70,7 @@ def a_star_search(graph, start, N, heuristic, locations):
     # Wrap the heuristic with the wrapper function
     heuristic_call = heuristic_wrapper(heuristic, N)
     initial_frontier = (0 + heuristic_call(start, set(locations) - visited_locations), 0, start, [start], visited_locations, set([start]))
-    frontier = LimitedPriorityQueue(limit=1000)
+    frontier = LimitedPriorityQueue(limit=500)
     frontier.push(initial_frontier)
     
     while frontier:
