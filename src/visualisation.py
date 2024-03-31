@@ -107,7 +107,7 @@ def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, in
     if side_length ** 2 != num_tiles:
         raise ValueError("Length of tile_exits must be a perfect square.")
 
-    fig, axs = plt.subplots(side_length, side_length, figsize=(9, 9), gridspec_kw={'wspace':0.1, 'hspace':0.1})
+    fig, axs = plt.subplots(side_length, side_length, figsize=(6, 6), gridspec_kw={'wspace':0.1, 'hspace':0.1})
     axs = axs.flatten() if num_tiles > 1 else [axs]  # Ensure axs is always a list
 
     for i, exits in enumerate(tile_exits):
@@ -142,14 +142,26 @@ def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, in
 
 # The plan for this function is to be called for each coordinate in the BFS shortest path list, so you have a trail of knights, to prove how to reprint the knight image after the initialisation.
 # Then you can move on to removing the previous image print [from the tile it's leaving]. And then you can move on to stuff like doing that whenever any entity's coordinates change, and having a list of entities with their image filename and coordinate.
-def update_knight(size, position, axs, block=False):
+def update_character(size, position, axs, filename, current_position):
     
     # My trouble here is temp.py is going to be calling this method because it has bfs_path from breadth_first.py and it commands the drawing (ie calls draw_maze), but print_image() here requires arguments from other functions here in visualisation.py
     # The error coming here is that print_image() takes an int for the position like 91 for bottom right but temp.py is giving an array like (9,0) for bottom right. Don't know how to resolve simply.
     row, col = position
     num_columns = int(math.sqrt(len(size)))
     flat_position = row * num_columns + col
-    print_image("knight.png", size, flat_position, axs)
+    print_image(filename, size, flat_position, axs)
+
+    # Clear previous position
+    row, col = current_position
+    flat_position = row * num_columns + col
+    ax = axs[flat_position]
+
+    # Clear the Axes corresponding to this position
+    ax.clear()
+
+    # Redraw the tile at this position without the character's image
+    draw_tile(ax, list(size[flat_position].keys()))
+
     plt.pause(0.1)
     #time.sleep(1)
 
@@ -214,16 +226,17 @@ def erase_path(size: List[dict[str]], path: List[Tuple[int, int]], axs: List[plt
     """
 
     num_columns = int(math.sqrt(len(size)))
-    for position in path:
-        row, col = position
-        flat_position = row * num_columns + col
-        ax = axs[flat_position]
+    if path:
+      for position in path:
+          row, col = position
+          flat_position = row * num_columns + col
+          ax = axs[flat_position]
 
-        # Clear the Axes corresponding to this position
-        ax.clear()
+          # Clear the Axes corresponding to this position
+          ax.clear()
 
-        # Redraw the tile at this position without the knight's image
-        draw_tile(ax, list(size[flat_position].keys()))
+          # Redraw the tile at this position without the knight's image
+          draw_tile(ax, list(size[flat_position].keys()))
 
     print_image("crown.png", size, int(math.sqrt(len(size)))-1, axs)
     for location in monster_locations:

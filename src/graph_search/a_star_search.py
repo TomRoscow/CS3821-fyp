@@ -1,5 +1,6 @@
 import heapq
 import inspect
+import numpy as np
 
 class LimitedPriorityQueue:
     def __init__(self, limit):
@@ -89,3 +90,19 @@ def a_star_search(graph, start, N, heuristic, locations):
             frontier.push(new_frontier)
     
     return None, float('inf')  # Return None if no path found
+
+def adjust_path(graph, path, new_end, size, heuristic):
+    """Adjusts the given path to account for the new end position."""
+    if new_end in path:
+        # If the new end is already in the path, trim the path to that point
+        return path[:path.index(new_end) + 1]
+    else:
+        # Find the closest point in the path to the new end and recalculate from there
+        idx = np.argmin([manhattan_distance(point, new_end) for point in path])
+        closest_point = path[idx]
+        new_start_index = path.index(closest_point)
+        new_path_part, _ = a_star_search(graph, closest_point, size, heuristic, [new_end])
+        if new_path_part is not None:
+            return path[:new_start_index] + new_path_part
+        else:
+            raise Exception("Unable to find path from monster to hero.")

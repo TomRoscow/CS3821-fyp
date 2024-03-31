@@ -2,7 +2,7 @@ import math
 from graph_search.greedy import greedy_search
 from monsters import static_monsters
 from items import add_items
-from visualisation import draw_maze, erase_path, update_knight
+from visualisation import draw_maze, erase_path, update_character
 from graph import create_maze_graph
 from graph_search.breadth_first import bfs
 from graph_search.depth_first import dfs
@@ -18,13 +18,13 @@ if __name__ == "__main__":
 
     # Map the size choices to numerical sizes
     size_mapping = {
-        'small': 8,  # Let a small maze be 8x8
-        'medium': 16,  # Let a medium maze be 15x15
-        'large': 32   # Let a large maze be 20x20
+        'small': 4,
+        'medium': 8,
+        'large': 16
     }
     
     # Get the numerical size from the user's input
-    size = size_mapping.get(args.size, 8)  # Default to 'small' (8x8) if not specified
+    size = size_mapping.get(args.size, 4)  # Default to 'small' (4x4) if not specified
 
     #parser = argparse.ArgumentParser()
     #parser.add_argument("--tile_exits")
@@ -35,13 +35,13 @@ if __name__ == "__main__":
     #size = 10  <-this was the old way of setting size before user choice to also med or large
     flattened_exits, graph = create_maze_graph(size)
 
-    # Creates monsters and places them in graph
-    graph, monsters = static_monsters(graph, size)
+    # Creates monsters and places their costs in graph
+    graph, monsters_starts = static_monsters(graph, size)
 
     # Creates items and places them in graph
-    items_locations = add_items(graph, size)
+    items_locations = add_items(size)
     
-    tile_exits, axs = draw_maze(flattened_exits, monsters, items_locations, block=True)
+    tile_exits, axs = draw_maze(flattened_exits, monsters_starts, items_locations, block=True)
 
     # My attempt to create a list of entities instead of handling drawing the crown and knight separately repeatedly
     #entities = [[]]
@@ -65,13 +65,15 @@ if __name__ == "__main__":
     # UNIFORM-COST SEARCH ENTRANCE TO CROWN
     ucs_path, ucs_cost = uniform_cost_search(graph, (size-1, 0), (0, size-1))
     if ucs_path:
+        trail_to_remove = ucs_path[0]
         for each in ucs_path:
-            update_knight(tile_exits, each, axs, block=True)   
+            update_character(tile_exits, each, axs, "knight.png", trail_to_remove)   
+            trail_to_remove = each
         print(f"UCS least costly path from character to reward: {ucs_path}, Cost: {ucs_cost}")
     else:
         print(f"No path found from character to reward with UCS.")
 
-    erase_path(tile_exits, ucs_path, axs, monsters, items_locations)
+    erase_path(tile_exits, ucs_path, axs, monsters_starts, items_locations)
 
     # A* SEARCH ALL CORNERS, THREE HEURISTICS
     
@@ -81,54 +83,64 @@ if __name__ == "__main__":
 
     a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_nearest_location, set(get_corners(size)))
     if a_star_path:
-        for each in a_star_path:
-            update_knight(tile_exits, each, axs, block=True)
+        # trail_to_remove = a_star_path[0]
+        # for each in a_star_path:
+        #     update_character(tile_exits, each, axs, "knight.png", trail_to_remove)
+        #     trail_to_remove = each
         print(f"A* shortest path touching all corners, length: {len(a_star_path)}, cost: {a_star_cost}. Heuristic: Nearest Corner")
     else:
         print(f"No path found touching all corners with A* algorithm and nearest corner heuristic.")
 
-    erase_path(tile_exits, a_star_path, axs, monsters, items_locations)
+    erase_path(tile_exits, a_star_path, axs, monsters_starts, items_locations)
         
     a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, heuristic_sum_locations, set(get_corners(size)))
     if a_star_path:
+        trail_to_remove = a_star_path[0]
         for each in a_star_path:
-            update_knight(tile_exits, each, axs, block=True)
+            update_character(tile_exits, each, axs, "knight.png", trail_to_remove)
+            trail_to_remove = each
         print(f"A* shortest path touching all corners, length: {len(a_star_path)}, cost: {a_star_cost}. Heuristic: Sum of Corners")
     else:
         print(f"No path found touching all corners with A* algorithm and sum of corners heuristic.")
 
-    erase_path(tile_exits, a_star_path, axs, monsters, items_locations)
+    erase_path(tile_exits, a_star_path, axs, monsters_starts, items_locations)
 
     a_star_path, a_star_cost = a_star_search(graph, (size-1, 0), size, custom_heuristic, set(get_corners(size)))
     if a_star_path:
-        for each in a_star_path:
-            update_knight(tile_exits, each, axs, block=True)
+        # trail_to_remove = a_star_path[0]
+        # for each in a_star_path:
+        #     update_character(tile_exits, each, axs, "knight.png", trail_to_remove)
+        #     trail_to_remove = each
         print(f"A* shortest path touching all corners, length: {len(a_star_path)}, cost: {a_star_cost}. Heuristic: Custom")
     else:
         print(f"No path found touching all corners with A* algorithm and my custom heuristic.")
 
-    erase_path(tile_exits, a_star_path, axs, monsters, items_locations)    
+    erase_path(tile_exits, a_star_path, axs, monsters_starts, items_locations)    
 
     
     # A* SEARCH COLLECT ALL ITEMS
     items_path_a_star, items_cost_a_star = a_star_search(graph, (size-1, 0), size, heuristic_nearest_location, set(items_locations))
     if items_path_a_star:
+        trail_to_remove = items_path_a_star[0]
         for each in items_path_a_star:
-            update_knight(tile_exits, each, axs, block=True)
+            update_character(tile_exits, each, axs, "knight.png", trail_to_remove)
+            trail_to_remove = each
         print(f"A* shortest path collecting all items, length: {len(items_path_a_star)}, cost: {items_cost_a_star}. Heuristic: Nearest Item")
     else:
         print(f"No path found collecting all items with A* algorithm and nearest item heuristic.")
 
-    erase_path(tile_exits, items_path_a_star, axs, monsters, items_locations)
+    erase_path(tile_exits, items_path_a_star, axs, monsters_starts, items_locations)
 
     # GREEDY SEARCH COLLECT ALL ITEMS
     items_path_greedy = greedy_search(graph, (size-1, 0), items_locations, heuristic_nearest_location)
     if items_path_greedy:
+        trail_to_remove = items_path_greedy[0]
         for each in items_path_greedy:
-            update_knight(tile_exits, each, axs, block=True)
+            update_character(tile_exits, each, axs, "knight.png", trail_to_remove)
+            trail_to_remove = each
         print(f"Greedy shortest path collecting all items, length: {len(items_path_greedy)}. Heuristic: Nearest Item")
     else:
         print(f"No path found collecting all items with greedy algorithm and nearest item heuristic.")
 
     # COMPARISON OF A* AND GREEDY SEARCHES COLLECTING ALL ITEMS OVER SEVERAL ITERATIONS
-    #compare_a_star_greedy()
+    compare_a_star_greedy()
