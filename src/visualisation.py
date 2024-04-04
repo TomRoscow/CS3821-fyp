@@ -4,16 +4,12 @@ from pathlib import Path
 source_path = Path(__file__).resolve()
 root_dir = source_path.parent.parent
 
-import time
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import random
 import math
-import requests
-from PIL import Image
-from io import BytesIO
 import numpy as np
 import os
+from PIL import Image
 from typing import List, Tuple
 plt.ion()  # Turn on interactive mode
 

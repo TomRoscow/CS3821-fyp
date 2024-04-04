@@ -1,9 +1,7 @@
 import argparse
 
-from src.graph_search.breadth_first import bfs
-from src.graph_search.depth_first import dfs
 from src.graph import create_maze_graph
-from src.visualisation import draw_maze, erase_path, update_character
+from src.visualisation import draw_maze
 
 
 if __name__ == "__main__":

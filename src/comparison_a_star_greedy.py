@@ -69,5 +69,5 @@ def compare_a_star_greedy():
 
         plt.tight_layout() # This makes sure there is a nice spacing between the subplots
 
-        plt.show()
+        plt.show(block=False)
         plt.savefig(f"./output/a_star_greedy_comparison_results_{i+1}_runs.png")
