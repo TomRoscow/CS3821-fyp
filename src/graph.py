@@ -1,5 +1,6 @@
 import random
 
+
 def determine_potential_exits(row, col, N):
     # Determine potential exits based on maze boundaries
     potential_exits = set()
@@ -67,7 +68,7 @@ def create_maze_graph(N, allow_dead_ends=False, seed=None):
     tile_exits = [[{} for _ in range(N)] for _ in range(N)]  # Initialise exits for NxN maze
     exit_probability = 0.25
 
-    if seed:
+    if seed is not None:
         random.seed(seed)
 
     # Initialise the graph as an empty dictionary. It will be populated with nested dictionaries

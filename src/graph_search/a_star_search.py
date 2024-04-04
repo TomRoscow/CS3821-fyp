@@ -79,7 +79,7 @@ def a_star_search(graph, start, N, heuristic, locations):
             return path_list, cost  # Return path and cost when all locations are visited
         
         for next_node, next_cost in graph[current].items():
-            if path_list.count(next_node) > 3:  # Allow to visit a node twice but no more to avoid cycles
+            if path_list.count(next_node) > 2:  # Allow to visit a node twice but no more to avoid cycles
                 continue # Skip the next node
             
             new_cost = cost + next_cost

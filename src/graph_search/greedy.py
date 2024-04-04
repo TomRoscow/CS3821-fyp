@@ -13,7 +13,7 @@ def greedy_search(graph, start, locations, heuristic):
             return path_list  # Return path when all locations are visited
 
         for next_node, _ in graph[current].items():
-            if path_list.count(next_node) > 3:  # Allow to visit a node twice but no more to avoid cycles
+            if path_list.count(next_node) > 2:  # Allow to visit a node twice but no more to avoid cycles
                 continue  # Skip the next node
 
             new_visited_locations = visited_locations | ({next_node} if next_node in locations else set())
