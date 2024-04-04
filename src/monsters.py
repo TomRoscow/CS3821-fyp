@@ -12,7 +12,7 @@ def static_monsters(graph: Dict[Tuple[int, int], Dict[Tuple[int, int], int]], si
     elif size == 16:
         num_monsters = 4
     elif size == 32:
-        num_monsters = 10
+        num_monsters = 8
     else:
         num_monsters = 0  # Default case with no monsters
 

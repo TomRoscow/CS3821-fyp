@@ -131,9 +131,9 @@ def draw_maze(tile_exits: List[dict[str]], monster_locations: List[Tuple[int, in
     for location in items_locations:
         row, col = location
         flat_location = row * side_length + col
-        print_image("key.png", tile_exits, flat_location, axs)
+        print_image("orb.png", tile_exits, flat_location, axs)
 
-    plt.pause(0.1)
+    plt.pause(0.5)
     #block tells it to open the window but continue running the script
     #time.sleep(1)
 
@@ -162,7 +162,7 @@ def update_character(size, position, axs, filename, current_position):
     # Redraw the tile at this position without the character's image
     draw_tile(ax, list(size[flat_position].keys()))
 
-    plt.pause(0.1)
+    plt.pause(0.5)
     #time.sleep(1)
 
 
@@ -246,4 +246,4 @@ def erase_path(size: List[dict[str]], path: List[Tuple[int, int]], axs: List[plt
     for location in items_locations:
         row, col = location
         flat_location = row * num_columns + col
-        print_image("key.png", size, flat_location, axs)
+        print_image("orb.png", size, flat_location, axs)

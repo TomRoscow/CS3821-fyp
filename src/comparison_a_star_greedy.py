@@ -1,37 +1,36 @@
 # Effectiveness: path length
 # Efficiency: easiest option is walltime because it doesn't require modifying existing functions. Other options include nodes visited, memory used...
 
-import timeit
+import time
 import pandas as pd
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from graph_search.a_star_search import a_star_search, heuristic_nearest_location
-from graph import create_maze_graph
-from graph_search.greedy import greedy_search
-from items import add_items
-from monsters import static_monsters
+from src.graph_search.a_star_search import a_star_search, heuristic_nearest_location
+from src.graph import create_maze_graph
+from src.graph_search.greedy import greedy_search
+from src.items import add_items
+from src.monsters import static_monsters
 
 def compare_a_star_greedy():
-    n_runs = 3 # Should be 100 eventually
+    n_runs = 20 # Should be 100 eventually
     results = pd.DataFrame()
 
     for algorithm_name, algorithm_function in [("A*", a_star_search), ("greedy", greedy_search)]:
-        # Below line should be the following as final when running for large as well... for maze_size, maze_dimension in [("small", 4), ("medium", 8), ("large", 16)]:
-        for maze_size, maze_dimension in [("small", 4), ("medium", 8)]:
+        for maze_size, maze_dimension in [("small", 4), ("medium", 8), ("large", 16)]:
             print(f"Beginning {algorithm_name} search on {maze_size} maze")
             for i in tqdm(range(n_runs)): # This creates a progress bar so you can estimate how long it's going to take (probably a long time)
                 # Set up maze graph, monsters, items
                 _, graph = create_maze_graph(maze_dimension, False, i)
                 graph, _ = static_monsters(graph, maze_dimension)
                 items_locations = add_items(maze_dimension)
-                start_time = timeit.timeit()
+                start_time = time.time()
                 if algorithm_name == "A*":
                     path, _ = algorithm_function(graph, (maze_dimension-1, 0), maze_dimension, heuristic_nearest_location, set(items_locations))
                 elif algorithm_name == "greedy":
                     path = algorithm_function(graph, (maze_dimension-1, 0), items_locations, heuristic_nearest_location)
-                end_time = timeit.timeit()
+                end_time = time.time()
                 if path:
                     found_path = True
                     path_length = len(path)

@@ -2,12 +2,12 @@
 
 import argparse
 
-from a_star_search import a_star_search, adjust_path, heuristic_nearest_location
-from graph import create_maze_graph
-from greedy import greedy_search
-from items import add_items
-from monsters import static_monsters
-from visualisation import draw_maze, update_character
+from src.graph_search.a_star_search import a_star_search, adjust_path, heuristic_nearest_location
+from src.graph import create_maze_graph
+from src.graph_search.greedy import greedy_search
+from src.items import add_items
+from src.monsters import static_monsters
+from src.visualisation import draw_maze, update_character
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Maze Size Selector")
@@ -80,12 +80,11 @@ if __name__ == "__main__":
         for monster, (monster_current_position, path) in monsters_with_paths.items():
             new_path = adjust_path(graph, path, hero_current_position, size, heuristic_nearest_location)
             new_path = new_path[1:]
-            monsters_with_paths[monster] = (path[1], new_path)
-            print(f"Monster number: {monster}, location: {path[1]}")
-            update_character(tile_exits, path[1], axs, "goblin.png", monster_current_position)
-            if path[1] == hero_current_position:
+            monsters_with_paths[monster] = (path[0], new_path)
+            update_character(tile_exits, path[0], axs, "goblin.png", monster_current_position)
+            if path[0] == hero_current_position:
                 game_over = True
                 print(f"Hero has been caught by a monster!")
                 break
 
-    print(f"Greedy shortest path collecting items from every tile: hero collected {len(remaining_items_locations)} in {hero_steps_taken} steps")
+    print(f"Greedy shortest path collecting items from every tile: hero collected {len(items_locations) - len(remaining_items_locations)} in {hero_steps_taken} steps")

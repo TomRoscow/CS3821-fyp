@@ -69,7 +69,7 @@ def a_star_search(graph, start, N, heuristic, locations):
     visited_locations = set([start]) if start in locations else set()
     # Wrap the heuristic with the wrapper function
     heuristic_call = heuristic_wrapper(heuristic, N)
-    initial_frontier = (0 + heuristic_call(start, set(locations) - visited_locations), 0, start, [start], visited_locations, set([start]))
+    initial_frontier = 0 + heuristic_call(start, set(locations) - visited_locations), 0, start, [start], visited_locations, set([start])
     frontier = LimitedPriorityQueue(limit=500)
     frontier.push(initial_frontier)
     
@@ -79,14 +79,14 @@ def a_star_search(graph, start, N, heuristic, locations):
             return path_list, cost  # Return path and cost when all locations are visited
         
         for next_node, next_cost in graph[current].items():
-            if path_set.count(next_node) > 2:  # Allow to visit a node twice but no more to avoid cycles
+            if path_list.count(next_node) > 3:  # Allow to visit a node twice but no more to avoid cycles
                 continue # Skip the next node
             
             new_cost = cost + next_cost
             new_path_list = path_list + [next_node]
             new_path_set = path_set | {next_node}
             new_visited_locations = visited_locations | ({next_node} if next_node in locations else set())
-            new_frontier = (new_cost + heuristic_call(next_node, set(locations) - new_visited_locations), new_cost, next_node, new_path_list, new_visited_locations, new_path_set)
+            new_frontier = new_cost + heuristic_call(next_node, set(locations) - new_visited_locations), new_cost, next_node, new_path_list, new_visited_locations, new_path_set
             frontier.push(new_frontier)
     
     return None, float('inf')  # Return None if no path found
