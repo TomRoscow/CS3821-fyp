@@ -18,7 +18,7 @@ def compare_a_star_greedy():
     n_runs = 50
     results = pd.DataFrame()
     for i in tqdm(range(n_runs)):
-        tqdm.write(f"\nBeginning run {i} of {n_runs}...")
+        tqdm.write(f"\nBeginning run {i+1} of {n_runs}...")
         for algorithm_name, algorithm_function in [("A*", a_star_search), ("greedy", greedy_search)]:
             for maze_size, maze_dimension in [("small", 4), ("medium", 8), ("large", 16)]:
                 tqdm.write(f"  running {algorithm_name} search on {maze_size} maze")
