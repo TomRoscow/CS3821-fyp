@@ -17,7 +17,7 @@ To run this project, you need to install the following:
 `pip install -r requirements.txt`
 
 ## How to run
-The project specification details 9 deliverables. For clarity, each deliverable is demonstrated by running a dedicated script that calls the necessary algorithm and visualisation functions to demonstrate a working version of the code, including a pop-up window, to fulfil the deliverable requirements.
+The project specification details 9 deliverables. For clarity, each deliverable is demonstrated by running a dedicated script that calls the necessary algorithm and visualisation functions to demonstrate a working version of the code, including a pop-up window, to fulfil the deliverable requirements. Please also see YouTube video https://youtu.be/nbIiXvl5DiE
 
 Recommended usage:
 `python -m deliverable1`
@@ -28,7 +28,6 @@ Recommended usage:
 ├── images/             # Images used for visualisation
 ├── output/             # Outputs produced by the scripts during execution
 ├── report/             # Report and other documents included in the submission
-├── scripts/            # Scripts corresponding to each deliverable
 ├── src/                # Source code for algorithms, visualisation, and maze game
 │   ├── graph_search/   # Single-agent and multi-agent graph search algorithms
 ├── test/               # Unit tests
